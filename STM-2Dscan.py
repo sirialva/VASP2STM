@@ -334,7 +334,8 @@ for h in heights:
 	cm = plt.cm.get_cmap('%s' %colormaps[cmap_No])
 	plt.contourf(supercell_xarray,supercell_yarray,P, 900, cmap=cm)
 	plt.colorbar()
-	plt.savefig(mode_label+'_'+str(round(h,3))+'.png', dpi=300, bbox_inches='tight')
+	#plt.savefig(mode_label+'_'+str(round(h,3))+'.png', dpi=300, bbox_inches='tight')
+	plt.show()
 
 print("Done!\n")
 
