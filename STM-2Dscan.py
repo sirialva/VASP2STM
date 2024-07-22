@@ -224,13 +224,13 @@ supercell_xngridpoints = (ngridpoints[0]-1)*m+1
 supercell_yngridpoints = (ngridpoints[1]-1)*n+1
 
 # Make arrays of x and y values.
-supercell_xarray = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float)
-supercell_yarray = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float)
+supercell_xarray = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float64)
+supercell_yarray = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float64)
 
 # Make arrays of supercell_density2D/I/H with the same dimensions as x/y arrays.
-supercell_density2D = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float)
-I = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float)
-H = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float)
+supercell_density2D = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float64)
+I = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float64)
+H = np.zeros((supercell_xngridpoints,supercell_yngridpoints),np.float64)
 
 #Find projection of b vector onto a vector.
 ytox = np.dot(unit_cell[0],unit_cell[1].T)/cell_lengths[0]
