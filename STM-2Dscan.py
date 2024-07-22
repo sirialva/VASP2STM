@@ -327,7 +327,7 @@ for h in heights:
 
 	plt.figure()
 	plt.rcParams['figure.max_open_warning'] = 50
-	plt.gca(aspect='equal')
+	plt.axis('square')
 	plt.axis('off')
 	plt.xticks(())
 	plt.yticks(())
