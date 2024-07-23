@@ -2,7 +2,9 @@
 
 VASP2STM.py
 
-Based on STM-2DScan.py by ShuangLeung (sleung1924@gmail.com)             
+Based on STM-2DScan.py by ShuangLeung (sleung1924@gmail.com) 
+
+Written by Siri, July 2024.
 
 '''
 
@@ -10,10 +12,10 @@ import sys, os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+#import matplotlib.cm as cm
 from ase.calculators.vasp import VaspChargeDensity
 
-class VASP2STM():
+class charge_density:
 
     def _init_(self, filename='CHG'):
         # Read CHG file
@@ -53,6 +55,9 @@ class VASP2STM():
 
         self.heights = []
         self.heights.append(tip_height)
+
+        m = supercell[0]
+        n = supercell[1]
 
         # The size of grids along x/y (in-plane) vectors.
         supercell_xngridpoints = (self.ngridpoints[0]-1)*supercell[0]+1
@@ -105,17 +110,17 @@ class VASP2STM():
                     mi = i%(self.ngridpoints[0]-1)
                     nj = j%(self.ngridpoints[1]-1)
 
-                    if scan_mode_option == "1":
+                    if self.scan_mode == 'constant_height':
                         self.I[i][j] = ldos[mi][nj]
 
-                    elif scan_mode_option == "2":
+                    elif self.scan_mode == 'constant_current':
                         if c2[mi][nj]-c1[mi][nj] == 0:
                             self.H[i][j] = n2*self.cell_lengths[2]/self.ngridpoints[2]
 
                         else:
                             self.H[i][j] = (n2+(averaged_current-c1[mi][nj])/(c2[mi][nj]-c1[mi][nj]))*self.cell_lengths[2]/self.ngridpoints[2]
                         
-                    else:
+                    elif self.scan_mode == '2Dslice':
                         self.supercell_density2D[i][j] = density2D[mi][nj]
 
     def plot(self):
@@ -138,9 +143,8 @@ class VASP2STM():
         plt.axis('off')
         plt.xticks(())
         plt.yticks(())
-        #cm = plt.cm.get_cmap('%s' %colormaps[cmap_No])
-        cm = plt.colormaps.get_cmap(colormaps[cmap_No])
+        cm = plt.colormaps.get_cmap('bone')
         plt.contourf(self.supercell_xarray,self.supercell_yarray,P, 900, cmap=cm)
         plt.colorbar()
+        
         #plt.savefig(mode_label+'_'+str(round(h,3))+'.png', dpi=300, bbox_inches='tight')
-        plt.show()
