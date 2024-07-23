@@ -15,13 +15,14 @@ import matplotlib.pyplot as plt
 #import matplotlib.cm as cm
 from ase.calculators.vasp import VaspChargeDensity
 
-class charge_density:
+class charge_density():
 
-    def _init_(self, filename='CHG'):
+    def __init__(self, filename='CHG'):
         # Read CHG file
         vasp_charge = VaspChargeDensity(filename)
         self.density = vasp_charge.chg[-1]
         self.atoms = vasp_charge.atoms[-1]
+       
         del vasp_charge
         
         # Read size of XYZ grids.
@@ -35,6 +36,7 @@ class charge_density:
                  scan_mode='constant_current',
                  cut_direction='c',
                  supercell=[1,1]):
+        print(self.density.shape)
         '''
         cut_direction_options = ['a', 'b', 'c']
         scan_mode_options=['constant_height','constant_current','2Dslice']
@@ -128,13 +130,13 @@ class charge_density:
 	    # The newly generated images will be named after the letter "H/C/S"(constant-height mode/constant-current mode/2D-slice)
         # and height value (of tip position).
         if self.scan_mode == 'constant_height':
-            P = self.I
+            self.P = self.I
             mode_label = "H" 
         elif self.scan_mode == 'constant_current':
-            P = self.H
+            self.P = self.H
             mode_label = "C"
         elif self.scan_mode == '2Dslice':
-            P = self.supercell_density2D
+            self.P = self.supercell_density2D
             mode_label = "S"
 
         plt.figure()
@@ -144,7 +146,7 @@ class charge_density:
         plt.xticks(())
         plt.yticks(())
         cm = plt.colormaps.get_cmap('bone')
-        plt.contourf(self.supercell_xarray,self.supercell_yarray,P, 900, cmap=cm)
+        plt.contourf(self.supercell_xarray,self.supercell_yarray,self.P, 900, cmap=cm)
         plt.colorbar()
         
         #plt.savefig(mode_label+'_'+str(round(h,3))+'.png', dpi=300, bbox_inches='tight')
