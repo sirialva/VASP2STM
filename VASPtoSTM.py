@@ -18,11 +18,12 @@ from ase.calculators.vasp import VaspChargeDensity
 class charge_density():
 
     def __init__(self, filename='CHG'):
+        self.filename = filename
+
         # Read CHG file
         vasp_charge = VaspChargeDensity(filename)
         self.density = vasp_charge.chg[-1]
         self.atoms = vasp_charge.atoms[-1]
-       
         del vasp_charge
         
         # Read size of XYZ grids.
@@ -36,11 +37,21 @@ class charge_density():
               scan_mode='2D_slice',
               cut_direction='c',
               supercell=[1,1]):
+        self.tip_height = tip_height
         
-        cut_height = 
+        cut_height_idx = int(round(tip_height/self.cell_lengths[2]*self.density.shape[2]))
 
-        self.cut_density = self.density[self.density[:,:,cut_height]]
+        print(cut_height_idx)
+
+        self.cut_density = self.density[:,:,cut_height_idx]
     
-    def plot(self):
-        c = plt.matshow(self.cut_density)
+    def plot(self,save_fig=False):
+        c = plt.matshow(self.cut_density, cmap='bone')
         plt.colorbar(c)
+        plt.xticks(())
+	    plt.yticks(())
+        plt.axis('square')
+	    plt.axis('off')
+
+        if save_fig = True:
+            plt.savefig(self.filename+'_'+str(round(self.tip_height,3))+'.pdf', dpi=300, bbox_inches='tight')
