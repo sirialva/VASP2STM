@@ -33,6 +33,15 @@ class charge_density():
         self.unit_cell = self.atoms.get_cell()
         self.cell_lengths = np.sqrt(np.dot(self.unit_cell,self.unit_cell.transpose()).diagonal())
 
+    def swap_columns(self, array, column1, column2):
+        if array.ndim == 1:
+            temp = array[column1].copy()
+            array[column1]  = array[column2]
+            array[column2] =  temp
+        elif array.ndim == 3:
+            array = np.swapaxes(array,column1,column2)
+        return array
+
     def make_cut(self, 
                  tip_height,
                  scan_mode='2D_slice',
@@ -44,7 +53,10 @@ class charge_density():
         if cut_direction == 'c':
             pass
         elif cut_direction == 'b':
-            pass
+            self.unit_cell = self.swap_columns(self.unit_cell, 1, 2)
+            self.cell_lengths = self.swap_columns(self.cell_lengths, 1, 2)
+            self.density = self.swap_columns(self.density, 1, 2)
+            print('NOTICE: Choosing cut_direction = b swaps b and c axis in data.')
 
         # Find index of cut height slice
         cut_height_idx = int(round(tip_height/self.cell_lengths[2]*self.density.shape[2]))
