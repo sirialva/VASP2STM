@@ -12,7 +12,7 @@ import sys, os
 import time
 import numpy as np
 import matplotlib.pyplot as plt
-#import matplotlib.cm as cm
+import matplotlib.colors
 from ase.calculators.vasp import VaspChargeDensity
 
 class charge_density():
@@ -45,8 +45,7 @@ class charge_density():
     def make_cut(self, 
                  tip_height,
                  scan_mode='2D_slice',
-                 cut_direction='c',
-                 supercell=[1,1]):
+                 cut_direction='c'):
         self.tip_height = tip_height
 
         # Choose cut_direction, rearranges coordinate order
@@ -66,9 +65,21 @@ class charge_density():
             self.cut_density = self.density[:,:,cut_height_idx]
         elif scan_mode == 'constant_current':
             self.cut_density = self.density[:,:,cut_height_idx]
+
+    def make_supercell(self,size=1):
+        # Tile cut_density to a supercell of given size, 
+        # either give singular integer (gives a square) or [rows,columns] for not square
+        self.size = size
+        if isinstance(self.size, int):
+            self.size = [self.size,self.size]
+        self.cut_density = np.tile(self.cut_density, reps=self.size)
+
+    def custom_cmap(self, colorlist=['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:baby pink', 'xkcd:pale']):
+        cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colorlist)
+        return cmap
     
     def plot(self,save_fig=False):
-        c = plt.matshow(self.cut_density, cmap='RdPu_r')
+        c = plt.matshow(self.cut_density, cmap=self.custom_cmap())
         plt.colorbar(c)
         plt.xticks(())
         plt.yticks(())
