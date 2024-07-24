@@ -48,10 +48,10 @@ class charge_density():
     def plot(self,save_fig=False):
         c = plt.matshow(self.cut_density, cmap='bone')
         plt.colorbar(c)
-        plt.xticks(())
-	    plt.yticks(())
-        plt.axis('square')
-	    plt.axis('off')
+        #plt.xticks(())
+        #plt.yticks(())
+        #plt.axis('square')
+        #plt.axis('off')
 
-        if save_fig = True:
+        if save_fig == True:
             plt.savefig(self.filename+'_'+str(round(self.tip_height,3))+'.pdf', dpi=300, bbox_inches='tight')
