@@ -74,23 +74,27 @@ class charge_density():
             self.size = [self.size,self.size]
         self.cut_density = np.tile(self.cut_density, reps=self.size)
 
-    def custom_cmap(self, colormap=None, colorlist=['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:pale']):
+    def colormap(self, colormap=None, colorlist=None):
         # Generate your own colormap with a list of colors given in colorlist 
         # or use an existing colormap by specifying the name in colormap.
         if colormap == 'Siri pinks':
             colorlist = ['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:pale']
         elif colormap == 'Siri blues':
-            colorlist=['xkcd:dark', 'xkcd:dark blue grey', 'xkcd:dusk blue', 'xkcd:nice blue', 'xkcd:light light blue']
+            colorlist = ['xkcd:dark', 'xkcd:dark blue grey', 'xkcd:dusk blue', 'xkcd:nice blue', 'xkcd:light light blue']
         elif colormap != None:
-            self.cmap = colormap
-        else:
-            self.cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colorlist)
-        return self.cmap
+            cmap = colormap
+        if colorlist != None:
+            cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colorlist)
+        if cmap != None:
+            self.plot.set_cmap(cmap)
     
     def plot(self,save_fig=False):
-        fig, ax = plt.subplots()
-        c = ax.imshow(self.cut_density, cmap=self.cmap)
-        plt.colorbar(c)
+        self.fig = plt.figure()
+        self.ax = self.fig.add_subplot(111)
+        
+        self.plot = self.ax.imshow(self.cut_density, cmap='Greys')
+        self.cbar = self.fig.colorbar(self.plot, ax = self.ax)
+        #self.clim(0,max_fft)
         plt.xticks(())
         plt.yticks(())
 

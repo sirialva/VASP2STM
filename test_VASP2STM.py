@@ -11,4 +11,5 @@ data.make_cut(tip_height=54,cut_direction='b')
 data.make_supercell(size=5)
 
 data.plot()
+data.colormap(colormap='Siri pinks')
 plt.show()
