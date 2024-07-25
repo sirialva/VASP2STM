@@ -7,10 +7,8 @@ import VASPtoSTM
 #data.make_cut(tip_height=23)
 
 data = VASPtoSTM.charge_density(filename='CHG_lute3')
-data.make_cut(tip_height=47.5,cut_direction='b')
+data.make_cut(tip_height=54,cut_direction='b')
 data.make_supercell(size=5)
-
-data.custom_cmap(colorlist=['xkcd:blue', 'xkcd:pale'])
 
 data.plot()
 plt.show()

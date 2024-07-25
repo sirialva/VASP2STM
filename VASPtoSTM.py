@@ -74,12 +74,22 @@ class charge_density():
             self.size = [self.size,self.size]
         self.cut_density = np.tile(self.cut_density, reps=self.size)
 
-    def custom_cmap(self, colorlist=['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:baby pink', 'xkcd:pale']):
-        cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colorlist)
-        return cmap
+    def custom_cmap(self, colormap=None, colorlist=['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:pale']):
+        # Generate your own colormap with a list of colors given in colorlist 
+        # or use an existing colormap by specifying the name in colormap.
+        if colormap == 'Siri pinks':
+            colorlist = ['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:pale']
+        elif colormap == 'Siri blues':
+            colorlist=['xkcd:dark', 'xkcd:dark blue grey', 'xkcd:dusk blue', 'xkcd:nice blue', 'xkcd:light light blue']
+        elif colormap != None:
+            self.cmap = colormap
+        else:
+            self.cmap = matplotlib.colors.LinearSegmentedColormap.from_list("", colorlist)
+        return self.cmap
     
     def plot(self,save_fig=False):
-        c = plt.matshow(self.cut_density, cmap=self.custom_cmap())
+        fig, ax = plt.subplots()
+        c = ax.imshow(self.cut_density, cmap=self.cmap)
         plt.colorbar(c)
         plt.xticks(())
         plt.yticks(())
