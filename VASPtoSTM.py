@@ -20,13 +20,13 @@ class charge_density():
     def __init__(self, filename='CHG'):
         self.filename = filename
 
-        # Read CHG file
+        ''' Read CHG file '''
         vasp_charge = VaspChargeDensity(filename)
         self.density = vasp_charge.chg[-1]
         self.atoms = vasp_charge.atoms[-1]
         del vasp_charge
         
-        # Read size of XYZ grids.
+        ''' Read size of XYZ grids. '''
         self.ngridpoints = np.array(self.density.shape)
 
         # Read scaling factor and unit cell of the crystal structure.
@@ -56,27 +56,25 @@ class charge_density():
             self.cell_lengths = self.swap_columns(self.cell_lengths, 1, 2)
             self.density = self.swap_columns(self.density, 1, 2)
             print('NOTICE: Choosing cut_direction = b swaps b and c axis in data.')
-
-        # Find index of cut height slice
-        cut_height_idx = int(round(tip_height/self.cell_lengths[2]*self.density.shape[2]))
         
         # Find cut density
         if scan_mode == '2D_slice':
+            cut_height_idx = int(round(tip_height/self.cell_lengths[2]*self.density.shape[2]))
             self.cut_density = self.density[:,:,cut_height_idx]
         elif scan_mode == 'constant_current':
             self.cut_density = self.density[:,:,cut_height_idx]
 
     def make_supercell(self,size=1):
-        # Tile cut_density to a supercell of given size, 
-        # either give singular integer (gives a square) or [rows,columns] for not square
+        ''' Tile cut_density to a supercell of given size, 
+        either give singular integer (gives a square) or [rows,columns] for not square '''
         self.size = size
         if isinstance(self.size, int):
             self.size = [self.size,self.size]
         self.cut_density = np.tile(self.cut_density, reps=self.size)
 
     def colormap(self, colormap=None, colorlist=None):
-        # Generate your own colormap with a list of colors given in colorlist 
-        # or use an existing colormap by specifying the name in colormap.
+        ''' Generate your own colormap with a list of colors given in colorlist 
+        or use an existing colormap by specifying the name in colormap. '''
         if colormap == 'Siri pinks':
             colorlist = ['xkcd:dark violet', 'xkcd:deep pink', 'xkcd:pale']
         elif colormap == 'Siri blues':
@@ -89,9 +87,10 @@ class charge_density():
             self.plot.set_cmap(cmap)
     
     def plot(self,save_fig=False):
+        ''' Plots 2D data made by make_cut() '''
         self.fig = plt.figure()
         self.ax = self.fig.add_subplot(111)
-        
+
         self.plot = self.ax.imshow(self.cut_density, cmap='Greys')
         self.cbar = self.fig.colorbar(self.plot, ax = self.ax)
         #self.clim(0,max_fft)
